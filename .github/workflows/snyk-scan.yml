@@ -1,14 +1,19 @@
-name: Simple npm audit
+name: Snyk Scan
 
-on: [push, pull_request]
+on:
+  push:
+    branches: ["main", "fix/"]
+  pull_request:
 
 jobs:
-  audit:
+  snyk:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-      - name: Install dependencies
-        run: npm install
-      - name: Run npm audit
-        run: npm audit --audit-level=moderate
+      - uses: actions/checkout@v4
+
+      - name: Run Snyk test
+        uses: snyk/actions@master
+        with:
+          command: test --all-projects --severity-threshold=medium
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
